@@ -1,0 +1,110 @@
+#include<iostream>
+#include<string.h>
+#include<stdlib.h>
+#include<math.h>
+#include<ctype.h>
+using namespace std;
+char* accept(char[],int *,int *);
+char* push(char,char[],int*,int*);
+char* stackfull(int*,char[]);
+long double htoi(char[],int,int);
+long double value(char);
+void display(char[],long double);
+int main()
+{
+	char *hex=NULL;
+	int top=-1,cap=1;
+	long double h;
+	hex=(char*)malloc(cap);
+	cout<<"Enter valid Hexadecimal Number\n";
+	hex=accept(hex,&cap,&top);
+	h=htoi(hex,top,cap);
+	if(h==-1)
+	{	cout<<"Invalid Hexadecimal Number\n";
+		free(hex);
+		exit(0);
+	}
+	display(hex,h);
+	free(hex);
+return 0;
+}
+char* accept(char hex[],int *cap,int *top)
+{
+	char ch;
+	while(1)
+	{
+		ch=cin.get();
+		if((int)ch==10)
+			break;
+		hex=push(ch,hex,cap,top);
+	}
+	return hex;
+}
+
+char* push(char e,char hex[],int *cap,int *top)
+{
+	if((*top)==(*cap)-1)
+		hex=stackfull(cap,hex);
+
+	(*top)++;
+	hex[*top]=e;
+	return hex;
+}
+
+char* stackfull(int *cap,char hex[])
+{	(*cap)++;
+	hex=(char*) realloc(hex,(*cap));
+	return hex;
+}
+long double htoi(char hex[],int top,int cap)
+{
+	int n=0;
+	long double v=0,raise=1,b=0;
+	n=cap-top-1;
+	do
+	{
+		b=value(hex[top]);
+		if(b==-1)
+		{
+			return -1;
+		}
+		v=v+b*raise;
+		n++;
+		raise=pow(16,n);
+		top--;
+	}while(top>-1);
+	return v;
+}
+
+long double value(char h)
+{       int i;
+	if(isalpha(h))
+	{
+		switch(tolower(h))
+		{
+			case 'a':return 10;
+			case 'b':return 11;
+			case 'c':return 12;
+			case 'd':return 13;
+			case 'e':return 14;
+			case 'f':return 15;
+			default:cout<<"\nInvalid Hexadecimal Number\n";
+				exit(0);
+		}
+	}
+	else if(isdigit(h))
+	{       i=h-'0';
+		return i;
+	}
+	else
+	{
+		cout<<"Invalid Hexadecimal Number\n";
+
+	}
+	return -1;
+
+}
+void display(char hex[],long double h)
+{
+	cout<<"\nValue of hex "<<hex<<" is "<<h<<"\n";
+}
